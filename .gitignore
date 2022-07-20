@@ -12,3 +12,14 @@ test-results/
 launch*.properties
 
 
+*/target/
+/.idea/
+*.log
+*.class
+*.iml
+/.mvn/
+.mvn/**
+!/.idea/
+*.idea
+.idea/*
+/.idea/

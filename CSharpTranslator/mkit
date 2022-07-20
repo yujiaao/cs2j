@@ -4,6 +4,8 @@ set -e
 
 TARGET=${1-buildcs2j}
 
+echo $TARGET
+
 ant -f build/build.xml ${TARGET}
 
 ## cd src/CSharpParser
