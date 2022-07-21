@@ -1,5 +1,15 @@
 <project name="CS2JDist" default="releasefromhere" basedir=".">
 
+ <property name="lib.dir" location="jar" />
+ 
+  <!-- Set the classpath-->	
+  <path id="build.classpath">
+	  <fileset dir="${lib.dir}">
+	      <include name="**/*.jar" />
+	  </fileset>
+  </path>
+ 
+
   <description>
     This build file builds a cs2j distribution archive
   </description>
@@ -15,7 +25,7 @@
 
   <!-- load the ant-antlr task -->
   <taskdef resource="org/apache/tools/ant/antlr/antlib.xml" 
-classpath="${project.dir}/jar/ant-antlr3.jar;${project.dir}/jar/antlr-3.5.3.jar;${project.dir}/jar/stringtemplate-4.0.2.jar" />
+classpath="${project.dir}/jar/ant-antlr3.jar;${project.dir}/jar/antlr-3.5.3.jar;;${project.dir}/jar/antlr-runtime-3.5.3.jar;$${project.dir}/jar/stringtemplate-4.0.2.jar" />
   
   <!-- git macros, stolen / based on http://tlrobinson.net/blog/2008/11/13/ant-tasks-for-git/ -->
   <macrodef name = "git">
@@ -172,7 +182,7 @@ classpath="${project.dir}/jar/ant-antlr3.jar;${project.dir}/jar/antlr-3.5.3.jar;
   <target name="buildgrammars" description="invokes ANTLR to convert grammar files to C# source">
     <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
                       target="${cs2j.parser.dir}/cs.g" 
-                      make="true" conversiontimeout="15000" />
+                      make="true" conversiontimeout="15000"/>
     <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
                       target="${cs2j.transform.dir}/TemplateExtracter.g" 
                       libdirectory="${cs2j.parser.dir}" 
@@ -184,11 +194,11 @@ classpath="${project.dir}/jar/ant-antlr3.jar;${project.dir}/jar/antlr-3.5.3.jar;
     <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
                       target="${cs2j.transform.dir}/NetMaker.g" 
                       libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000"/>
+                      make="true" conversiontimeout="15000" />
     <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
                       target="${cs2j.transform.dir}/JavaPrettyPrint.g" 
                       libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000"/>
+                      make="true" conversiontimeout="15000" />
   </target>
 
   <target name="switch" description="switched to release branch">

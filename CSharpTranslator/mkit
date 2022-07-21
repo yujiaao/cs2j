@@ -1,31 +1,29 @@
-#!/bin/sh
+#!/bin/bash
+
+export ANTLR_LIBDIR=jar
 
 set -e
 
 TARGET=${1-buildcs2j}
-
 echo $TARGET
-
 ant -f build/build.xml ${TARGET}
-
 ## cd src/CSharpParser
 ## java -Xmx512m -jar ../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose cs.g
 ## cd ../../
-## 
+##
 ## cd src/CS2JTranslator/CS2JTransform
 ## #  echo TemplateExtracer.g
-## java -Xmx512m -jar ../../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose -lib ../../CSharpParser TemplateExtracter.g 
+## java -Xmx512m -jar ../../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose -lib ../../CSharpParser TemplateExtracter.g
 ## #  echo JavaMaker.g
-## java -Xmx512m -jar ../../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose -lib ../../CSharpParser JavaMaker.g 
+## java -Xmx512m -jar ../../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose -lib ../../CSharpParser JavaMaker.g
 ## #  echo NetMaker.g
-## java -Xmx512m -jar ../../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose -lib ../../CSharpParser NetMaker.g 
+## java -Xmx512m -jar ../../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose -lib ../../CSharpParser NetMaker.g
 ## #  echo JavaPrettyPrint.g
-## java -Xmx512m -jar ../../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose -lib ../../CSharpParser JavaPrettyPrint.g 
+## java -Xmx512m -jar ../../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose -lib ../../CSharpParser JavaPrettyPrint.g
 ## cd ../../../
-## 
+##
 ## cd src
 ## xbuild
 ## cd ../
-## 
+##
 echo 'All Done'
-
