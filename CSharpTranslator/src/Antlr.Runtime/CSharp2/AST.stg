@@ -45,13 +45,13 @@ using Antlr.Runtime.Tree;<\n>
 parserMembers() ::= <<
 protected ITreeAdaptor adaptor = new CommonTreeAdaptor();<\n>
 public ITreeAdaptor TreeAdaptor
-{
-    get { return this.adaptor; }
-    set {
+\{
+    get \{ return this.adaptor; \}
+    set \{
 	this.adaptor = value;
 	<grammar.directDelegates:{g|<g:delegateName()>.TreeAdaptor = this.adaptor;}>
-	}
-}
+	\}
+\}
 >>
 
 @returnScope.ruleReturnMembers() ::= <<
