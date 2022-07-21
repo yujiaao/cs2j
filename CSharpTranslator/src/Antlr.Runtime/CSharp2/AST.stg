@@ -50,8 +50,7 @@ public ITreeAdaptor TreeAdaptor
     set \{
 	this.adaptor = value;
 	<grammar.directDelegates:{g|<g:delegateName()>.TreeAdaptor = this.adaptor;}>
-	\}
-\}
+	\} \}
 >>
 
 @returnScope.ruleReturnMembers() ::= <<
