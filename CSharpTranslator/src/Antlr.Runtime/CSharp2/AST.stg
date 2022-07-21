@@ -42,7 +42,7 @@ using Antlr.Runtime.Tree;<\n>
 >>
 
 /** Add an adaptor property that knows how to build trees */
-parserMembers() ::= <<
+@parserMembers() ::= <<
 protected ITreeAdaptor adaptor = new CommonTreeAdaptor();<\n>
 public ITreeAdaptor TreeAdaptor
 \{
