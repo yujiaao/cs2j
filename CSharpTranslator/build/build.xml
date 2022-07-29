@@ -1,247 +1,35 @@
-<project name="CS2JDist" default="releasefromhere" basedir=".">
+<project name="antlr3_and_ant" default="antlr_classpath" basedir=".">
 
- <property name="lib.dir" location="jar" />
- 
-  <!-- Set the classpath-->	
-  <path id="build.classpath">
-	  <fileset dir="${lib.dir}">
-	      <include name="**/*.jar" />
-	  </fileset>
-  </path>
- 
+    <property name="lib.dir" location="../jar" />
 
-  <description>
-    This build file builds a cs2j distribution archive
-  </description>
-
-  <tstamp>
-    <format property="timestamp.format" pattern="yyMMdd" />
-  </tstamp>
-
-  <property file="${user.home}/${ant.project.name}.build.properties"/>
-  <property file="${user.home}/build.properties"/>
-  <property file="local.build.properties"/>
-  <property file="build.properties"/>
-
-  <!-- load the ant-antlr task -->
-  <taskdef resource="org/apache/tools/ant/antlr/antlib.xml" 
-classpath="${project.dir}/jar/ant-antlr3.jar;${project.dir}/jar/antlr-3.5.3.jar;;${project.dir}/jar/antlr-runtime-3.5.3.jar;$${project.dir}/jar/stringtemplate-4.0.2.jar" />
-  
-  <!-- git macros, stolen / based on http://tlrobinson.net/blog/2008/11/13/ant-tasks-for-git/ -->
-  <macrodef name = "git">
-    <attribute name = "command" />
-    <attribute name = "dir" default = "" />
-    <attribute name = "failonerror" default = "false" />
-    <attribute name = "gitresult" default = "gitresult" />
-    <attribute name = "gitresultsetonfail" default = "@{gitresult}.setonfail" />
-    <element name = "args" optional = "true" />
-    <sequential>
-      <echo message = "git @{command}" />
-      <exec executable = "git" dir = "@{dir}" failonerror="@{failonerror}" resultproperty = "@{gitresult}">
-        <arg value = "@{command}" />
-        <args/>
-      </exec>
-      <condition property="@{gitresultsetonfail}"> 
-        <equals arg1="${@{gitresult}}" arg2="1"/> 
-      </condition> 
-    </sequential>
-  </macrodef>
-
-  <target name="setplatform">
-    <condition property="windows.platform">
-      <os family="windows"/>
-    </condition>
-  </target>
-
-  <target name="setrelease">
-    <property name="cs2j.user.guide" value="${google.docs.title}"/>
-    <property name="release.tagname.prefix" value=""/>
-  </target>
-
-  <target name="completeprops">
-    <property name="release.tagname" value="${release.tagname.prefix}${timestamp.format}${release.tagname.suffix}"/>
-    <property name="release.zip" value="${build.dir}/cs2j-${release.tagname}.zip"/>
-    <property name="release.mailsafe.zip" value="${build.dir}/cs2j-${release.tagname}-mailsafe.zip"/>
-  </target>
+    <!-- Set the classpath-->
+    <path id="build.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
 
 
-  <target name="release" description="make a release archive" depends="clean,init,switch,checkclean,buildcs2j,tagme,mkcs2jlibprojsrc,mkarchive,mkmailarchive"/>
 
-  <target name="releasefromhere" description="make a release archive off the current branch" depends="clean,init,checkclean,setrelease,completeprops,buildcs2j,mkcs2jlibprojsrc,mkarchive,mkmailarchive"/>
+    <!-- Check if ANTLR3 can be found in the classpath -->
+<!--    <target name="antlr_classpath" >-->
+<!--        <whichresource property="antlr.in.classpath" class="org.antlr.Tool" classpathref="build.classpath" />-->
+<!--        <fail message="ANTLR3 not found via CLASSPATH ${java.class.path}">-->
+<!--            <condition>-->
+<!--                <not>-->
+<!--                    <isset property="antlr.in.classpath"/>-->
+<!--                </not>-->
+<!--            </condition>-->
+<!--        </fail>-->
+<!--        <echo>ANTLR3 found via CLASSPATH</echo>-->
+<!--    </target>-->
 
-  <target name="dummyrelease" description="make a release archive (doesn't change git repository)" depends="clean,init,buildcs2j,mkcs2jlibprojsrc,mkarchive,mkmailarchive"/>
+    <!-- Antlr3 is called here -->
+    <target name="antlr">
+        <antlr:ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr"
+                          verbose="true"
+                          outputdirectory="."
+                          target="CMinus.g"/>
+    </target>
 
-  <target name="dist" description="Distribute final zip to final resting place">
-    <copy todir="${release.dir}" file="${release.zip}"/>
-    <copy tofile="${release.dir}/cs2j-trial-latest.zip" file="${release.zip}"/>
-  </target>
-
-  <target name="mkmailarchive" description="builds a zip file containing the release, adds dummy extension to executables" if="mailsafe.exe.extension" depends="mkreleasefiles">
-    <move todir="${build.dir}/archive/cs2j-${release.tagname}" includeemptydirs="false">
-      <fileset dir="${build.dir}/archive/cs2j-${release.tagname}">
-        <include name="**/*.exe"/>
-      </fileset>
-      <mapper type="glob" from="*" to="*${mailsafe.exe.extension}"/>
-    </move>
-    <zip destfile="${release.mailsafe.zip}" basedir="${build.dir}/archive/" includes="cs2j-${release.tagname}/**/*"/>
-  </target>
-
-  <target name="mkarchive" description="builds a zip file containing the release" depends="mkreleasefiles">
-    <zip destfile="${release.zip}" basedir="${build.dir}/archive/" includes="cs2j-${release.tagname}/**/*"/>
-  </target>
-
-  <target name="mkreleasefiles" description="creates a set of release files">
-    <mkdir dir="${build.dir}/archive/cs2j-${release.tagname}"/>
-    <copy todir="${build.dir}/archive/cs2j-${release.tagname}">
-      <fileset dir="${cs2j.library.project}" includes="NetFramework/**/*.xml"/>
-      <fileset dir="${project.dir}" includes="THIRDPARTY-LICENSES/**"/>
-      <fileset dir="${build.dir}/cs2jlibrary" includes="**/*.zip"/>
-    </copy>
-    <copy todir="${build.dir}/archive/cs2j-${release.tagname}/THIRDPARTY-LICENSES" file="${cs2j.parser.dir}/cs.g"/>
-    <copy todir="${build.dir}/archive/cs2j-${release.tagname}/CS2JTranslator/bin">
-      <fileset dir="${cs2j.src.dir}/CS2JTranslator/${exe.sub.dir}">
-        <exclude name="*.vshost.*"/>
-        <include name="*.exe"/>
-        <include name="*.dll"/>
-      </fileset>
-    </copy>
-    <copy todir="${build.dir}/archive/cs2j-${release.tagname}">
-      <fileset dir="${project.dir}/docs/external">
-        <include name="README"/>
-        <include name="CHANGELOG"/>
-        <include name="${cs2j.user.guide}.pdf"/>
-      </fileset>
-    </copy>
-    <copy todir="${build.dir}/archive/cs2j-${release.tagname}">
-      <fileset dir="${project.dir}/resources">
-        <include name="DefaultSettings.ini"/>
-      </fileset>
-    </copy>
-  </target>
-
-  <target name="mkcs2jlibprojsrc" description="Build CS2JLibrary Project source for distribution">
-    <ant dir="${cs2j.library.project}" target="src">
-      <property name="src.zip" value="${build.dir}/cs2jlibrary/cs2jlib-src-${release.tagname}.zip"/>
-    </ant>
-  </target>
-
-  <target name="pushme" description="Push changes to remote" >
-    <git command = "push" failonerror="true">
-      <args>
-        <arg value = "origin"/>
-        <arg value = "HEAD"/>
-      </args>
-    </git>
-    <git command = "push" failonerror="true">
-      <args>
-        <arg value = "--tags"/>
-      </args>
-    </git>
-  </target>
-
-  <target name="tagme" description="tag current state">
-    <git command = "tag" failonerror="true">
-      <args>
-        <arg value = "-a"/>
-        <arg value = "-m"/>
-        <arg value = "Tagging release"/>
-        <arg value = "${release.tagname}"/>
-      </args>
-    </git>
-  </target>
-
-  <target name="refreshdocs" description="Refreshes the user guides for Google Docs (need to install googlecl)">
-    <antcall target="getuserguide">
-      <param name="google.docs.title" value="CS2JTrialUsersGuide"/>
-    </antcall>
-    <antcall target="getuserguide">
-      <param name="google.docs.title" value="CS2JUsersGuide"/>
-    </antcall>
-  </target>
-
-  <target name="getuserguide" description="Downloads the user guide for Google Docs (need to install googlecl)">
-     <exec executable="google" failonerror="false">
-       <arg value = "docs"/>
-       <arg value = "--user=${google.docs.user}"/>
-       <arg value = "--folder=${google.docs.folder}"/>
-       <arg value = "--dest=${project.dir}/docs/external/${google.docs.title}.pdf"/>
-       <arg value = "get"/>
-       <arg value = "${google.docs.title}.doc"/>
-     </exec>
-  </target>
-
-  <target name="buildcs2j" depends="buildgrammars" description="builds all C# source in the solution">
-    <exec osfamily="windows" executable="${win.msbuild.exe}" failonerror="true">
-      <arg value = "${cs2j.sln}"/>
-    </exec>
-    <exec osfamily="mac" executable="${other.msbuild.exe}" failonerror="true">
-      <arg value = "${cs2j.sln}"/>
-    </exec>
-  </target>
-
-  <target name="buildgrammars" description="invokes ANTLR to convert grammar files to C# source">
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.parser.dir}/cs.g" 
-                      make="true" conversiontimeout="15000"/>
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.transform.dir}/TemplateExtracter.g" 
-                      libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000"/>
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.transform.dir}/JavaMaker.g" 
-                      libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000"/>
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.transform.dir}/NetMaker.g" 
-                      libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000" />
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.transform.dir}/JavaPrettyPrint.g" 
-                      libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000" />
-  </target>
-
-  <target name="switch" description="switched to release branch">
-    <git command = "checkout" failonerror="true">
-      <args>
-        <arg value = "--quiet"/>
-        <arg value = "${release.branch}"/>
-      </args>
-    </git>
-  </target>
-    
-  <target name="checkclean" description="fails if working copy is dirty" unless="override.clean.check">
-    <git command = "diff-index" gitresult = "local.wc.isdirty">
-      <args>
-        <arg value = "--quiet"/>
-        <arg value = "HEAD"/>
-      </args>
-    </git>
-    <fail message = "Working Copy is dirty.  Commit changes and try again." if="local.wc.isdirty.setonfail" />
-  </target>
-    
-  <target name="init" depends="">
-    <mkdir dir="${build.dir}" />
-  </target>
-
-  <target name="clean" depends="" description="Clean build directory">
-    <delete failonerror="false" dir="${build.dir}" />
-    <delete failonerror="false" dir="${cs2j.parser.dir}" includes="cs*.cs *.tokens"/>
-    <delete failonerror="false" dir="${cs2j.transform.dir}"  includes="*.cs *.tokens" excludes="CommonWalker.cs NetFragments.cs SyntaxFragments.cs"/>
-    <exec osfamily="windows" executable="${win.msbuild.exe}">
-      <arg value = "${cs2j.sln}"/>
-      <arg value = "/verbosity:quiet"/>
-      <arg value = "/t:Clean"/>
-    </exec>
-    <exec osfamily="mac" executable="${other.msbuild.exe}">
-      <arg value = "${cs2j.sln}"/>
-      <arg value = "/verbosity:quiet"/>
-      <arg value = "/t:Clean"/>
-    </exec>
-  </target>
-    
-  <target name="dumpProperties" description="output all set properties, a useful sanity check">
-    <echoproperties/>
-  </target>
-    
 </project>

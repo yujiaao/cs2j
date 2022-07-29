@@ -6,7 +6,7 @@ set -e
 
 TARGET=${1-buildcs2j}
 echo $TARGET
-ant -f build/build.xml ${TARGET}
+ant -f build.xml ${TARGET}
 ## cd src/CSharpParser
 ## java -Xmx512m -jar ../../jar/antlr-3.3.jar -Xconversiontimeout 15000 -make -verbose cs.g
 ## cd ../../
