@@ -15,14 +15,12 @@ along with this program.  If not, see
    <http://www.opensource.org/licenses/mit-license>
 */
 
-using System;
 using System.Collections.Generic;
-using Twiglet.CS2J.Translator.Utils;
 using System.IO;
 
 namespace Twiglet.CS2J.Translator
 {
-        public class CS2JOption<T>
+    public class CS2JOption<T>
         {
            private bool isDefault = true;
            public bool IsDefault

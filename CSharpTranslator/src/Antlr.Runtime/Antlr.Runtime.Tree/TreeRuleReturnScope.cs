@@ -33,22 +33,33 @@ namespace Antlr.Runtime.Tree
 {
 	using System;
 	using RuleReturnScope	= Antlr.Runtime.RuleReturnScope;
-	
-	/// <summary>
-	/// This is identical to the ParserRuleReturnScope except that
-	/// the start property is a tree node and not a Token object
-	/// when you are parsing trees.  To be generic the tree node types
-	/// have to be Object :(
-	/// </summary>
-	public class TreeRuleReturnScope : RuleReturnScope
-	{
-		/// <summary>First node or root node of tree matched for this rule.</summary>
-        public object start;
 
-		/// <summary>Return the start token or tree </summary>
-		override public object Start
-		{
-			get { return start; }
-		}
-	}
+    /// <summary>
+    /// This is identical to the ParserRuleReturnScope except that
+    /// the start property is a tree node and not a Token object
+    /// when you are parsing trees.  To be generic the tree node types
+    /// have to be Object :(
+    /// </summary>
+
+        using Antlr.Runtime;
+        using System;
+
+        [Serializable]
+        public class TreeRuleReturnScope<TTree> : IRuleReturnScope<TTree>
+        {
+            private TTree _start;
+
+            public TTree Start
+            {
+                get =>
+                    this._start;
+                set =>
+                    this._start = value;
+            }
+
+            TTree IRuleReturnScope<TTree>.Stop =>
+                default(TTree);
+        }
+    
+
 }

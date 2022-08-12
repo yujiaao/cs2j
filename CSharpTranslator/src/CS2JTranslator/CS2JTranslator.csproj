@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -55,6 +55,7 @@
     <Compile Include="CS2JMain\Templates.cs" />
     <Compile Include="CS2JTemplate\TranslationTemplate.cs" />
     <Compile Include="CS2JTransform\CommonWalker.cs" />
+    <Compile Include="CS2JTransform\GrammarRuleAttribute.cs" />
     <Compile Include="CS2JTransform\JavaMaker.cs" />
     <Compile Include="CS2JTransform\JavaPrettyPrint.cs" />
     <Compile Include="CS2JTransform\NetMaker.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="CS2JUtil\Set.cs" />
     <Compile Include="CS2JTransform\NetFragments.cs" />
     <Compile Include="CS2JTransform\SyntaxFragments.cs" />
+    <Compile Include="DebugAntlr\Parser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CSharpParser\cs.g">
@@ -75,10 +77,10 @@
     <None Include="CS2JTransform\TemplateExtracter.g" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="antlr.runtime, Version=2.7.7.3, Culture=neutral, PublicKeyToken=d7701e059243744f">
-      <HintPath>..\..\dll\antlr.runtime.dll</HintPath>
+    <Reference Include="Antlr3.Utility">
+      <HintPath>..\..\dll\Antlr3.Utility.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
     <Reference Include="StringTemplate, Version=3.0.1.6846, Culture=neutral, PublicKeyToken=beee492b52c41e85">
       <HintPath>..\..\dll\StringTemplate.dll</HintPath>
     </Reference>

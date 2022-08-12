@@ -19,7 +19,7 @@ grammar cs;
 options {
     memoize=true;
 	output=AST;
-    language=CSharp2;
+    language=CSharp;
 }
 
 tokens {
@@ -51,7 +51,6 @@ tokens {
             YIELD_RETURN;
             YIELD_BREAK;
             UNCHECKED;
-
             GLOBAL_ATTRIBUTE;
             ATTRIBUTE;
 

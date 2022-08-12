@@ -187,7 +187,7 @@ namespace NDesk.Options {
 		void IList.Remove (object value)            {(values as IList).Remove (value);}
 		void IList.RemoveAt (int index)             {(values as IList).RemoveAt (index);}
 		bool IList.IsFixedSize                      {get {return false;}}
-		object IList.this [int index]               {get {return this [index];} set {(values as IList)[index] = value;}}
+	//	object IList.this [int index]               {get {return this [index];} set {(values as IList)[index] = value;}}
 		#endregion
 
 		#region IList<T>

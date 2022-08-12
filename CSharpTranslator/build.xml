@@ -5,8 +5,12 @@
   <!-- Set the classpath-->	
   <path id="build.classpath">
 	  <fileset dir="${lib.dir}">
-	      <include name="**/*.jar" />
-	  </fileset>
+	      <include name="antrl-3.3.jar" />
+          <include name="antrl-re-3.5.jar" />
+          <include name="antrl-runtime-3.3.jar" />
+          <include name="stringtemplate-3.2.1.jar" />
+
+      </fileset>
   </path>
  
 
@@ -25,7 +29,9 @@
 
 
   <!-- load the ant-antlr task -->
-  <taskdef resource="org/apache/tools/ant/antlr/antlib.xml" classpathref="build.classpath" />
+  <taskdef resource="org/apache/tools/ant/antlr/antlib.xml"
+           classpath="jar/ant-antlr3.jar;jar/antlr-runtime-3.3.jar;jar/stringtemplate-3.2.1.jar;jar/antlr-re-3.5.jar"
+           classpathref="build.classpath" />
 
   <!-- git macros, stolen / based on http://tlrobinson.net/blog/2008/11/13/ant-tasks-for-git/ -->
   <macrodef name = "git">
@@ -170,7 +176,9 @@
      </exec>
   </target>
 
-  <target name="buildcs2j" depends="buildgrammars" description="builds all C# source in the solution">
+<!--  <target name="buildcs2j" depends="buildgrammars" description="builds all C# source in the solution">-->
+    <target name="buildcs2j"  description="builds all C# source in the solution">
+
     <exec osfamily="windows" executable="${win.msbuild.exe}" failonerror="true">
       <arg value = "${cs2j.sln}"/>
     </exec>
@@ -180,44 +188,44 @@
   </target>
 
   <target name="buildgrammars" description="invokes ANTLR to convert grammar files to C# source">
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.parser.dir}/cs.g" 
-                      make="true" conversiontimeout="15000" debug="on"  />
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.transform.dir}/TemplateExtracter.g" 
-                      libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000" debug="on"/>
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.transform.dir}/JavaMaker.g" 
-                      libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000" debug="on"/>
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.transform.dir}/NetMaker.g" 
-                      libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000" debug="on" />
-    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"
-                      target="${cs2j.transform.dir}/JavaPrettyPrint.g" 
-                      libdirectory="${cs2j.parser.dir}" 
-                      make="true" conversiontimeout="15000" debug="on" />
+<!--    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"-->
+<!--                      target="${cs2j.parser.dir}/cs.g" -->
+<!--                      make="true" conversiontimeout="15000" debug="on"  />-->
+<!--    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"-->
+<!--                      target="${cs2j.transform.dir}/TemplateExtracter.g" -->
+<!--                      libdirectory="${cs2j.parser.dir}" -->
+<!--                      make="true" conversiontimeout="15000" debug="on"/>-->
+<!--    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"-->
+<!--                      target="${cs2j.transform.dir}/JavaMaker.g" -->
+<!--                      libdirectory="${cs2j.parser.dir}" -->
+<!--                      make="true" conversiontimeout="15000" debug="on"/>-->
+<!--    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"-->
+<!--                      target="${cs2j.transform.dir}/NetMaker.g" -->
+<!--                      libdirectory="${cs2j.parser.dir}" -->
+<!--                      make="true" conversiontimeout="15000" debug="on" />-->
+<!--    <ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" verbose="true"-->
+<!--                      target="${cs2j.transform.dir}/JavaPrettyPrint.g" -->
+<!--                      libdirectory="${cs2j.parser.dir}" -->
+<!--                      make="true" conversiontimeout="15000" debug="on" />-->
   </target>
 
   <target name="switch" description="switched to release branch">
-    <git command = "checkout" failonerror="true">
-      <args>
-        <arg value = "--quiet"/>
-        <arg value = "${release.branch}"/>
-      </args>
-    </git>
+<!--    <git command = "checkout" failonerror="true">-->
+<!--      <args>-->
+<!--        <arg value = "&#45;&#45;quiet"/>-->
+<!--        <arg value = "${release.branch}"/>-->
+<!--      </args>-->
+<!--    </git>-->
   </target>
     
   <target name="checkclean" description="fails if working copy is dirty" unless="override.clean.check">
-    <git command = "diff-index" gitresult = "local.wc.isdirty">
-      <args>
-        <arg value = "--quiet"/>
-        <arg value = "HEAD"/>
-      </args>
-    </git>
-    <fail message = "Working Copy is dirty.  Commit changes and try again." if="local.wc.isdirty.setonfail" />
+<!--    <git command = "diff-index" gitresult = "local.wc.isdirty">-->
+<!--      <args>-->
+<!--        <arg value = "&#45;&#45;quiet"/>-->
+<!--        <arg value = "HEAD"/>-->
+<!--      </args>-->
+<!--    </git>-->
+<!--    <fail message = "Working Copy is dirty.  Commit changes and try again." if="local.wc.isdirty.setonfail" />-->
   </target>
     
   <target name="init" depends="">
